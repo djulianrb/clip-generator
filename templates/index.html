@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Dubber</title>
+    <meta name="description" content="Traduce tus videos con voces naturales e inteligencia artificial">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <div class="glass-container">
+        <header>
+            <h1>AI Video Dubber</h1>
+            <p>Traduce la voz de tus videos con sincronización perfecta</p>
+        </header>
+
+        <main>
+            <div class="mode-tabs">
+                <button id="tab-dub" class="tab-btn active">Traducción de Voz</button>
+                <button id="tab-clip" class="tab-btn">Generador de Clips</button>
+                <button id="tab-watermark" class="tab-btn">Limpiar Marca de Agua</button>
+            </div>
+
+            <div id="drop-area" class="drop-area">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <h3>Arrastra y suelta tu video aquí</h3>
+                <p>O haz clic para seleccionar un archivo (.mp4)</p>
+                <input type="file" id="fileElem" accept="video/mp4" style="display:none">
+            </div>
+
+            <div class="controls" id="dub-controls">
+                <div class="select-wrapper">
+                    <select id="direction">
+                        <option value="en-es">De Inglés a Español</option>
+                        <option value="es-en">De Español a Inglés</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="controls hidden" id="clip-controls">
+                <p style="text-align: center; color: var(--text-muted); width: 100%; font-size: 0.95rem;">
+                    Se crearán automáticamente cortes verticales listos para TikTok/Shorts usando la técnica de fondo borroso estético.
+                </p>
+            </div>
+            
+            <div class="controls hidden" id="watermark-controls">
+                <p style="text-align: center; color: var(--text-muted); width: 100%; font-size: 0.95rem;">
+                    La inteligencia artificial buscará la marca de agua y la difuminará sutilmente para que apenas se note.
+                </p>
+            </div>
+            
+            <div class="controls" style="margin-top: 15px;">
+                <button id="processBtn" class="premium-button" style="width: 100%;" disabled>Procesar Video</button>
+            </div>
+
+            <div id="status-container" class="status-container hidden">
+                <div class="spinner" id="spinner"></div>
+                <h4 id="status-title">Traduciendo...</h4>
+                <p id="status-message">Iniciando el motor de inteligencia artificial</p>
+            </div>
+
+            <div id="result-container" class="result-container hidden">
+                <h4>¡Tu video está listo!</h4>
+                <a id="downloadBtn" class="download-button" href="#" download>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Descargar Video
+                </a>
+                <div id="clips-list" style="margin-top: 15px;"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+openai-whisper
+edge-tts
+moviepy==1.0.3
+pydub
+deep-translator
+Flask
+werkzeug
+opencv-python
