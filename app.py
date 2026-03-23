@@ -14,13 +14,15 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # In-memory job state tracker
 jobs = {}
 
-def bg_process(job_id, input_path, mode, source=None, target=None):
+def bg_process(job_id, input_path, filename, mode, source=None, target=None):
     try:
         jobs[job_id]['status'] = 'processing'
         
         if mode == 'dub':
             jobs[job_id]['message'] = 'Transcribiendo y traduciendo audio... Esto puede tomar varios minutos.'
-            output_filename = f"dubbed_{job_id}.mp4"
+            
+            original_name = filename.rsplit('.', 1)[0]
+            output_filename = f"{original_name}_{target}.mp4"
             output_path = os.path.join(app.config['UPLOAD_FOLDER'], output_filename)
             
             dubber = VideoDubber(source_lang=source, target_lang=target)
@@ -33,9 +35,10 @@ def bg_process(job_id, input_path, mode, source=None, target=None):
         elif mode == 'clip':
             jobs[job_id]['message'] = 'Generando clips verticales... Por favor espera.'
             
+            original_name = filename.rsplit('.', 1)[0]
             output_dir = os.path.join(app.config['UPLOAD_FOLDER'], f"clips_{job_id}")
-            clipper = VideoClipper(clip_duration=45, max_clips=4)
-            generated_clips = clipper.generate_clips(input_path, output_dir)
+            clipper = VideoClipper(clip_duration=60, max_clips=None)
+            generated_clips = clipper.generate_clips(input_path, output_dir, base_name=f"{original_name}_clip")
             
             jobs[job_id]['status'] = 'done'
             jobs[job_id]['result_folder'] = f"clips_{job_id}"
@@ -44,7 +47,8 @@ def bg_process(job_id, input_path, mode, source=None, target=None):
 
         elif mode == 'watermark':
             jobs[job_id]['message'] = 'Buscando y difuminando marca de agua... Esto tomará un momento.'
-            output_filename = f"clean_{job_id}.mp4"
+            original_name = filename.rsplit('.', 1)[0]
+            output_filename = f"{original_name}_clean.mp4"
             output_path = os.path.join(app.config['UPLOAD_FOLDER'], output_filename)
             
             remover = WatermarkRemover()
@@ -94,7 +98,7 @@ def upload():
     jobs[job_id] = {'status': 'queued', 'message': 'Video subido. Iniciando motor AI...'}
     
     # Run the background process
-    thread = threading.Thread(target=bg_process, args=(job_id, input_path, mode, source, target))
+    thread = threading.Thread(target=bg_process, args=(job_id, input_path, filename, mode, source, target))
     thread.start()
     
     return jsonify({'job_id': job_id})
