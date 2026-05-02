@@ -13,3 +13,5 @@ uploads/
 *.mkv
 *.avi
 .DS_Store
+formats*.txt
+output_clips/
